@@ -1,26 +1,41 @@
-__kernel void float16InputLayer(__global float4* source, __global float16* dest, __constant float16 krnl, __constant int* dims) {
-    int id = get_global_id(0) + 2 + width[0] * (get_global_id(1) + 2);
+__kernel void float16InputLayer(__global float4* source, __global float16* dest, __constant float16* krnl, __constant int* dims) {
+    int id = get_global_id(0) + 2 + dims[0] * (get_global_id(1) + 2);
     float16 out = 0.0;
     int bufIdx, krnlIdx;
     float4 in;
     float16 in16;
     for(int yy = -2; yy < 3; yy++) {
-        bufIdx = id + width[0] * yy - 2;
-        krnlXIdx = width[1] * yy + 10;
+        bufIdx = id + dims[0] * yy - 2;
+        krnlIdx = dims[1] * yy + 10;
         in = source[bufIdx++];
-        in16 = (in, in, in, in);
+        in16.lo.lo = in;
+        in16.lo.hi = in;
+        in16.hi.lo = in;
+        in16.hi.hi = in;
         out = mad(in16, krnl[krnlIdx++], out);
         in = source[bufIdx++];
-        in16 = (in, in, in, in);
+        in16.lo.lo = in;
+        in16.lo.hi = in;
+        in16.hi.lo = in;
+        in16.hi.hi = in;
         out = mad(in16, krnl[krnlIdx++], out);
         in = source[bufIdx++];
-        in16 = (in, in, in, in);
+        in16.lo.lo = in;
+        in16.lo.hi = in;
+        in16.hi.lo = in;
+        in16.hi.hi = in;
         out = mad(in16, krnl[krnlIdx++], out);
         in = source[bufIdx++];
-        in16 = (in, in, in, in);
+        in16.lo.lo = in;
+        in16.lo.hi = in;
+        in16.hi.lo = in;
+        in16.hi.hi = in;
         out = mad(in16, krnl[krnlIdx++], out);
         in = source[bufIdx++];
-        in16 = (in, in, in, in);
+        in16.lo.lo = in;
+        in16.lo.hi = in;
+        in16.hi.lo = in;
+        in16.hi.hi = in;
         out = mad(in16, krnl[krnlIdx++], out);
     }
     out.s3 = 1;
